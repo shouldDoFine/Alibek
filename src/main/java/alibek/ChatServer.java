@@ -9,14 +9,13 @@ import java.util.*;
 public class ChatServer {
     ArrayList clientOutputStreams;
     private ServerSocket serverSocket;
-    public Map<String, User> userHashMap;
+    private Map<String, User> userHashMap;
 
 
     public ChatServer() {
         try {
             this.serverSocket = new ServerSocket(5000);
             userHashMap = new HashMap<String, User>();
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,8 +27,7 @@ public class ChatServer {
         try {
             while (true) {
                 Socket  clientSocket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                clientHandler.setChat(this);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 Thread t = new Thread(clientHandler);
                 t.start();
                 System.out.println("got a connection");

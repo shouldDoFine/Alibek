@@ -11,30 +11,24 @@ public class ClientHandler implements Runnable {
     private ArrayList clientOutputStreams;
     private ChatServer chat;
 
-
-
-
-
-    public ClientHandler(Socket clientSocket) {
+    public ClientHandler(Socket clientSocket, ChatServer chatServer) {
         try {
             sock = clientSocket;
+            chat = chatServer;
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             writer = new PrintWriter(sock.getOutputStream());
             writer.flush();
         }
         catch (Exception e) {e.printStackTrace();}
     }
+    public ClientHandler() {
 
-    public void setChat(ChatServer chat) {
-        this.chat = chat;
     }
 
     public void run() {
         writer.println("Hi User, enter your name ");
         writer.flush();
-
         addUser();
-
         String message;
         try {
             while ((message = waitMessage()) != null) {
@@ -45,12 +39,21 @@ public class ClientHandler implements Runnable {
         }catch (Exception e) {e.printStackTrace();}
     }
 
+    public void validateName(String name) throws Exception {
+        if(name == null) {
+            throw new Exception();
+        }
+        if( Character.isDigit(name.charAt(0)) ) {
+            throw new Exception();
+        }
+    }
+
     private void addUser() {
         try {
             String message = waitMessage();
+            validateName(message);
             User user = new User(message);
             chat.addUserToMap(user, writer);
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -58,11 +61,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-
-
     private String waitMessage() throws IOException {
         return reader.readLine();
     }
+
+
+
 
 
 

@@ -17,31 +17,21 @@ public class UserTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
-    public void createUser() {
-        user = new User();
+    public void createUser() throws Exception {
+        user = new User("Aleks");
     }
 
     @Test
-    public void getName() throws Exception {
-        user.setName("Aleks");
+    public void shouldBeAbleToFetchName() throws Exception {
         assertEquals("Aleks", user.getName());
     }
 
     @Test
-    public void setName() throws Exception {
-
-    }
-
-    @Test
-    public void isMe() throws Exception {
-        user.setName("Aleks");
+    public void shouldBeTrueIfIsItMe() throws Exception {
         assertTrue(user.isMe("Aleks"));
     }
-    @Test
-    public void validateName() throws Exception {
-        thrown.expect(Exception.class);
-        user.validateName("4Griwa");
-    }
-
-
 }
+
+
+
+
