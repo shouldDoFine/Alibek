@@ -6,7 +6,7 @@ import java.util.*;
 
 
 public class ClientHandler implements Runnable {
-    Socket sock;
+    private Socket sock;
     private BufferedReader reader;
     private PrintWriter writer;
     private ArrayList clientOutputStreams;
@@ -16,7 +16,7 @@ public class ClientHandler implements Runnable {
 
 
 
-    public ClientHandler(Socket clientSocket) {
+    private ClientHandler(Socket clientSocket) {
         try {
             sock = clientSocket;
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable {
     }
 
     public void run() {
-        writer.println("Hi User, enter your name");
+        writer.println("Hi User, enter your name ");
         writer.flush();
 
         addUser();
