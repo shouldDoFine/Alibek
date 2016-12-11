@@ -1,0 +1,91 @@
+package alibek;
+import java.io.*;
+import java.net.Socket;
+import java.util.*;
+
+
+public class ClientHandler implements Runnable {
+    private Socket sock;
+    private BufferedReader reader;
+    private PrintWriter writer;
+    private ArrayList clientOutputStreams;
+    private ChatServer chat;
+
+    public ClientHandler(Socket clientSocket, ChatServer chatServer) {
+        try {
+            sock = clientSocket;
+            chat = chatServer;
+            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            writer = new PrintWriter(sock.getOutputStream());
+            writer.flush();
+        }
+        catch (Exception e) {e.printStackTrace();}
+    }
+    public ClientHandler() {
+
+    }
+
+    public void run() {
+        writer.println("Hi User, enter your name ");
+        writer.flush();
+        addUser();
+        String message;
+        try {
+            while ((message = waitMessage()) != null) {
+                System.out.println("read " + message);
+                chat.tellEveryone(message, writer);
+                writer.flush();
+            }
+        }catch (Exception e) {e.printStackTrace();}
+    }
+
+    public void validateName(String name) throws Exception {
+        if(name == null) {
+            throw new Exception();
+        }
+        if( Character.isDigit(name.charAt(0)) ) {
+            throw new Exception();
+        }
+    }
+
+    private void addUser() {
+        try {
+            String message = waitMessage();
+            validateName(message);
+            User user = new User(message);
+            chat.addUserToMap(user, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String waitMessage() throws IOException {
+        return reader.readLine();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
